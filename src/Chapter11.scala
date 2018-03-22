@@ -1,3 +1,5 @@
+import _root_.scala.collection.mutable.ArrayBuffer
+
 object Chapter11 extends App {
 
   /* 1. */
@@ -50,7 +52,7 @@ object Chapter11 extends App {
       Fraction(num, den)
     }
 
-    /*override def equals(other: Any): Boolean = other match {
+    override def equals(other: Any): Boolean = other match {
       case other: Fraction => this.den == other.den && this.num == other.num
       case _ => false
     }
@@ -62,7 +64,6 @@ object Chapter11 extends App {
       result = prime * result + den
       result
     }
-*/
   }
 
   object Fraction {
@@ -95,13 +96,13 @@ object Chapter11 extends App {
       case _ => false
     }
 
-    /*override def hashCode(): Int = {
+    override def hashCode(): Int = {
       val prime = 57
       var result = 1
       result = prime * result + dollars
       result = prime * result + cents
       result
-    }*/
+    }
 
     def operate(other: Money, func: (Int, Int) => Int): Money = {
       var inCents = func(cents, other.cents)
@@ -122,9 +123,6 @@ object Chapter11 extends App {
 
   /* 5 */
   class Table() {
-
-    import _root_.scala.collection.mutable.ArrayBuffer
-
     private val rows: ArrayBuffer[ArrayBuffer[String]] = ArrayBuffer(ArrayBuffer.empty[String])
 
     def apply(): Table = this | "Java" | "Scala" || "Gosling" | "Odersky" || "JVM, .NET"
@@ -151,8 +149,8 @@ object Chapter11 extends App {
     private val lines = pic.split("\n")
 
     def +(other: ASCIIArt): ASCIIArt = {
-      val pics = lines.zip(other.lines)
-      val out = pics.map { case (x, y) => f"$x $y" }
+      val pics = (lines, other.lines).zipped
+      val out = pics.map(_ + " " + _) // { case (x, y) => f"$x $y" }
       new ASCIIArt(out.mkString("\n"))
     }
 
@@ -161,43 +159,61 @@ object Chapter11 extends App {
 
   object ASCIIArt {
     def apply(pic: String): ASCIIArt = new ASCIIArt(pic)
-  }
 
-  val x = ASCIIArt(
-    """/\_/\
+    val x = ASCIIArt(
+      """/\_/\
 ( ' ' )
 (  -  )
  | | |
 (__|__)""")
 
-  val y = ASCIIArt(
-    """   -----
+    val y = ASCIIArt(
+      """   -----
  / Hello \
 <  Scala |
  \ Coder /
    -----""")
+  }
 
   /* 7 */
-  class BitSequence {
-
-  }
-
 
   /* 8 */
-  /*class Matrix(n: Int) {
-    val matrix: Array[Array[Int]] = Array.ofDim[Int](n, n)
+  class Matrix(private val n: Int, private val m: Int) {
+
+    private var matrix: Array[Array[Int]] = Array.ofDim[Int](n, m)
+
     def update(m: Int, n: Int, value: Int): Unit = matrix(m)(n) = value
 
+    def apply(m: Int, n: Int): Int = matrix(m)(n)
+
+    private def operate(other: Matrix, fn: (Int, Int) => Int): this.type = {
+      require(n == other.n && m == other.m, "Dimensionality error.")
+      for (i <- 0 until n; j <- 0 until m) matrix(i)(j) = fn(matrix(i)(j), other(i, j))
+      this
+    }
+
+    def +(other: Matrix): this.type = operate(other, _ + _)
+
+    def -(other: Matrix): this.type = operate(other, _ - _)
+
+    def *(scalar: Int): this.type = {
+      matrix = matrix.map(_.map(_ * scalar))
+      this
+    }
+
+    override def toString: String = matrix.map(_.mkString(", ")).mkString("\n")
+
   }
+
   object Matrix {
-    def apply(n: Int): Matrix = new Matrix(n)
-  }*/
+    def apply(n: Int, m: Int): Matrix = new Matrix(n, m)
+  }
 
   /* 9 */
   object RichFile {
-    def unapply(fullPath: String): Option[(String, String, String)] = {
+    def unapply(fullpath: String): Option[(String, String, String)] = {
       val regex = """(.*)/(.*)\.(.*)""".r
-      fullPath match {
+      fullpath match {
         case regex(path, name, ext) => Some(path, name, ext)
         case _ => None
       }

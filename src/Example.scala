@@ -1,222 +1,331 @@
+import java.util.Calendar
+import javax.swing.text.Document
 
 object Example extends App {
 
-  /* 1. */
-  class Number(val value: Int) {
-    def apply(): Number = Number(3) + Number(4) -> Number(5)
 
-    def +(that: Number): Number = operate(that, _ + _)
+  trait Logger {
+    print(f"Logger => ")
+    def log(msg: String): Unit = {}
 
-    def ->(that: Number): Number = operate(that, _ * _)
+    // = println(f"Logged: $msg")
+    def info(msg: String, add: String = "INFO"): Unit = log(f"$add: $msg")
 
-    def operate(other: Number, func: (Int, Int) => Int) = Number(func(value, other.value))
+    def warn(msg: String, add: String = "WARN"): Unit = log(f"$add: $msg")
 
-    override def toString: String = f"value: $value"
+    def severe(msg: String, add: String = "SEVERE"): Unit = log(f"$add: $msg")
   }
 
-  object Number {
-    def apply(value: Int): Number = new Number(value)
+  trait ConsoleLogger extends Logger {
+    abstract override def log(msg: String): Unit = println(f"ConsoleLogger: $msg")
+  }
+
+  trait ShortLogger extends Logger {
+    print(f"ShortLogger => ")
+    val maxLength: Int = 10
+    var addString: String = "..."
+
+    def cutString(msg: String): String =
+      if (msg.length > maxLength)
+        msg.take(maxLength - addString.length) + addString
+      else msg
+
+    override def log(msg: String): Unit = super.log(cutString(msg))
+  }
+
+  trait TimestapLogger extends Logger {
+    print(f"TimestapLogger => ")
+    /*val mLength: Int
+    val array = new Array(mLength)*/
+    override def log(msg: String): Unit = super.log(f"${Calendar.getInstance().getTime()} $msg")
+  }
+
+  class Account {
+    print(f"Account => ")
+    var balance: Int = 0
+  }
+
+  class SavingsAccount extends Account with ShortLogger with TimestapLogger {
+    override def log(msg: String): Unit = println(f"!!$msg!!")
+  }
+
+  class BankAccount extends Account with Logger /*with ShortLogger with TimestapLogger */ {
+    print(f"BankAccount => ")
+    override def log(msg: String): Unit = println(f"BankAcoount: $msg")
+
+    def withdraw(amount: Int): Unit = {
+      if (balance < amount) severe("Withdraw error.")
+      else balance -= amount
+    }
+  }
+
+  /*class A {
+    print("A")
+    def getMessage(): String = "MESSAGE"
+  }
+  class B extends A {
+    print("B")
+    def methodB() = "B"
+  }
+  trait C extends B {
+    outer: A =>
+      print("C")
+      def n = 10
+      val arr = new Array(n)
+      println(outer.getMessage())
+      def log(): Unit = print(outer.getMessage())
+      def save(): Unit = print(f"save: ${outer.getMessage()}")
+  }
+  class D extends C {
+    print("D")
+    override def n = 5
+    override def getMessage() = "!! MESSAGE !!"
+    //def getMessage(): String = "MESSAGE"
+  }
+  val d = new D
+  d.log()
+  d.save()
+  print(d.arr.length + " " + d.methodB())*/
+
+
+
+  /*val acc = new BankAccount with TimestapLogger with ShortLogger {
+    override def log(msg: String): Unit = println(f"!!$msg!!")
+  }
+  println
+  acc.withdraw(100)
+
+  val acc2 = new SavingsAccount
+  acc2.log("MESSAGE")*/
+
+  /*trait Parent {
+    print("Parent => ")
+    def show(msg: String): Unit
+  }
+
+  class subParent extends Parent {
+    print("subParent => ")
+    def show(msg: String): Unit = print(f"\nsubParent: $msg")
+  }
+
+  trait otherSubParent extends Parent {
+    print("otherSubParent => ")
+    abstract override def show(msg: String): Unit = {super.show(msg); print(f"\notherSubParent: $msg")}
+  }
+
+  /*val obj = new subParent with otherSubParent
+  obj.show("MESSAGE")*/
+
+
+
+  trait A {
+    def log(msg: String): Unit //= print(f"A$msg")
+  }
+
+  trait B extends A {
+    val n = 10
+    abstract override def log(msg: String): Unit = super.log(f"B$msg")
+  }
+
+  trait C extends A {
+    val n: Int
+    val arr: Array[Int] = new Array[Int](n)
+    abstract override def log(msg: String): Unit = super.log(f"C$msg")
+  }
+
+  trait E {
+    def log(msg: String): Unit = print(f"E$msg")
+  }
+
+  class D(val n: Int = 10) extends A {
+    override def log(msg: String): Unit = print(f"D$msg")
   }
 
 
-  /* 3 */
-  class Fraction(n: Int, d: Int) {
-    private val num: Int = n
-    private val den: Int = d
+  class F {}
+  val d = new D(5) with C
 
-    override def toString: String = f"$this.num/$this.den"
 
-    def sign(a: Int): Int = a match {
-      case x if x > 0 => 1
-      case x if x < 0 => -1
-      case _ => 0
-    }
+  trait _A {
+    val range: Int = 10
+    val arr: Array[Int] = new Array[Int](range + 1)
+  }
+  class _B {
+  }
 
-    def gcd(a: Int, b: Int): Int = b match {
-      case 0 => math.abs(a)
-      case _ => gcd(b, a % b)
-    }
-
-    def -(other: Fraction): Fraction = operate(other, _ - _)
-
-    def +(other: Fraction): Fraction = operate(other, _ + _)
-
-    def *(other: Fraction): Fraction = Fraction(num * other.num, den * other.den)
-
-    def /(other: Fraction): Fraction = Fraction(num * other.den, den * other.num)
-
-    def operate(other: Fraction, func: (Int, Int) => Int): Fraction = {
-      val num = func(this.num * other.den, this.den * other.num)
-      val den = this.den * other.den
-      Fraction(num, den)
-    }
-
-    /*override def equals(other: Any): Boolean = other match {
-      case other: Fraction => this.den == other.den && this.num == other.num
-      case _ => false
-    }
-
-    override def hashCode: Int = {
-      val prime = 10
-      var result = 1
-      result = prime * result + num
-      result = prime * result + den
-      result
-    }
+  val _b = new {override val range = 5} with _B with _A
+  print(_b.arr.length)
 */
+
+
+
+  //val acc = new { val mLength = 5; } with BankAccount with ShortLogger with TimestapLogger { print(array.length)}
+  //acc.withdraw(100)
+
+  /*trait A {
+    val size: Int
+    val array = new Array(size)
   }
-
-  object Fraction {
-    def apply(n: Int, d: Int) = new Fraction(n, d)
+  class B(var _size: Int) extends { override val size = _size} with A {
+//    val size = _size
+    println(f"length: ${array.length}; size: $size")
   }
+  val s = 11
+  val b = new {override val size = s} with B(5)
+  print(b.size)*/
 
 
-  /* 4 */
-  class Money(d: Int, c: Int) {
-    val dollars: Int = d
-    val cents: Int = c
-
-    def +(other: Money): Money = operate(other, _ + _)
-
-    def *(other: Money): Money = operate(other, _ * _)
-
-    def <(other: Money): Boolean = compare(other, _ < _)
-
-    def >(other: Money): Boolean = compare(other, _ > _)
-
-    private def amount: Int = dollars * 100 + cents
-
-    private def compare(other: Any, func: (Int, Int) => Boolean): Boolean = other match {
-      case other: Money => func(amount, other.amount)
-      case _ => false
-    }
-
-    override def equals(other: Any): Boolean = other match {
-      case other: Money => dollars == other.dollars && cents == other.cents
-      case _ => false
-    }
-
-    /*override def hashCode(): Int = {
-      val prime = 57
-      var result = 1
-      result = prime * result + dollars
-      result = prime * result + cents
-      result
-    }*/
-
-    def operate(other: Money, func: (Int, Int) => Int): Money = {
-      var inCents = func(cents, other.cents)
-      var (outDollars, outCents) = BigInt(inCents) /% 100
-      outDollars += func(dollars, other.dollars)
-      Money(outDollars.intValue, outCents.intValue)
-    }
-
-    override def toString: String = f"amount: $dollars.$cents $$"
-  }
-
-  object Money {
-    def apply(d: Int, c: Int): Money = {
-      new Money(d, c)
-    }
-  }
 
 
-  /* 5 */
-  class Table() {
+  /*val acc = new {
+    val p = 99
+  } with BankAccount {
+    print(f"Anonymous => ")
+  }*/
+  /*with TimestapLogger with ShortLogger*//* {
+    println(f"Anonymous: ${this.getClass().getName()}")
+    //override def log(msg: String): Unit = println(f"override: $msg")
+    lazy val className = super.getClass().getName()
+    override def log(msg: String): Unit = super.log(f"$className: $msg")
+    val maxLength: Int = 30
+    addString = " ... ?"
+  }*/
+  //
 
-    import _root_.scala.collection.mutable.ArrayBuffer
 
-    private val rows: ArrayBuffer[ArrayBuffer[String]] = ArrayBuffer(ArrayBuffer.empty[String])
-
-    def apply(): Table = this | "Java" | "Scala" || "Gosling" | "Odersky" || "JVM, .NET"
-
-    def |(value: String): Table = {
-      rows.last += value
-      this
-    }
-
-    def ||(value: String): Table = {
-      rows += ArrayBuffer[String](value)
-      this
-    }
-
-    override def toString: String = rows.map(_.mkString("<tr><td>", "</td><td>", "</td></tr>")).mkString("<table>", "", "</table>")
-  }
-
-  object Table {
-    def apply(): Table = new Table()
-  }
-
-  /* 6 */
-  class ASCIIArt(pic: String) {
-    private val lines = pic.split("\n")
-
-    def +(other: ASCIIArt): ASCIIArt = {
-      val pics = lines.zip(other.lines)
-      val out = pics.map { case (x, y) => f"$x $y" }
-      new ASCIIArt(out.mkString("\n"))
-    }
-
-    override def toString: String = pic
-  }
-
-  object ASCIIArt {
-    def apply(pic: String): ASCIIArt = new ASCIIArt(pic)
-  }
-
-  val x = ASCIIArt(
-    """/\_/\
-( ' ' )
-(  -  )
- | | |
-(__|__)""")
-
-  val y = ASCIIArt(
-    """   -----
- / Hello \
-<  Scala |
- \ Coder /
-   -----""")
-
-  /* 7 */
-  class BitSequence {
+  /*class Number(val amount: Int) {
 
   }
-
-
-  /* 8 */
-  /*class Matrix(n: Int) {
-    val matrix: Array[Array[Int]] = Array.ofDim[Int](n, n)
-    def update(m: Int, n: Int, value: Int): Unit = matrix(m)(n) = value
-
+  object Number {
+    def apply(amount: Int): Number = new Number(amount)
+    implicit def compare(n: Number): Ordered[Number] = Ordered[Number]
   }
-  object Matrix {
-    def apply(n: Int): Matrix = new Matrix(n)
+  def func[T](x: T, x2: T)(implicit order: T => Ordered[T]): Boolean = {
+    x < x2
+  }
+  val n = Number(1)
+  val n2 = Number(2)
+  val res = func(n, n2)
+
+  println(res)*/
+
+
+  /*abstract class Person {
+    type Type
+    def doSome: Type
+  }
+  class Student extends Person {
+    type Type = String
+    def doSome: Type = ""
+  }*/
+  /*class Child extends Student {
+    override type Type = Int
+    override def doSome: Type = 0
   }*/
 
-  /* 9 */
-  object RichFile {
-    def unapply(fullPath: String): Option[(String, String, String)] = {
-      val regex = """(.*)/(.*)\.(.*)""".r
-      fullPath match {
-        case regex(path, name, ext) => Some(path, name, ext)
-        case _ => None
+  /*trait ExamplePerson {
+    type Type <: Person
+  }
+  class ExampleP extends ExamplePerson {
+    type Type = Student
+  }*/
+  /*  object Title
+
+    object Article
+
+    class Document {
+      var useNextArgAs: Any = null
+      var title: String = ""
+      var article: String = ""
+
+      def set(obj: Title.type): this.type = {
+        useNextArgAs = obj;
+        this;
       }
+
+      def set(obj: Article.type): this.type = {
+        useNextArgAs = obj;
+        this;
+      }
+
+      def to(value: String): Unit = useNextArgAs match {
+        case Title => title = value
+        case Article => article = value
+        case _ => ()
+      }
+
+      override def toString: String = f"title: $title; article: $article"
+    }
+
+
+
+    class BB {
+      type arr[T] = collection.mutable.ArrayBuffer[T]
+      val x = 0
+      //val s = new arr(1)
+    }
+
+    class X[T, U] {
+      type t = Map[T, U] forSome { type U <: T }
+    }
+
+    def doSome[M <: n.Member forSome { val n: Network}](m1: M, m2: M) = (m1, m2)
+
+    class Network {
+      class Member
+    }
+
+    val b = new BB
+    val map = new b.arr[Int](10)
+
+
+    val book = new Document
+    book set Title to "!"
+    book set Article to "!!"
+    println(book)*/
+
+
+  /*class Test[+T](val v: T)
+
+  def doSome(name: List[_ <: Person]): Unit = {}
+
+  class Friend[-T] {
+    def doSome(name: T): Unit = {
+      println("!")
     }
   }
 
-  /* 10 */
-  class RichFileX {
-    def unapplySeq(value: String): Option[Seq[String]] = {
-      val regex = """([^/]+)/?""".r
-      val matches = regex.findAllIn(value)
-      val seq = matches.map(part => {
-        val regex(value) = part;
-        value
-      })
-      if (seq.nonEmpty) Some(seq.toSeq) else None
-    }
-  }
+  class Person extends Friend[Person]
+  class Student extends Person
+  val student = new Student
+  val person = new Person
+
+  def makeWithFriend(s: Student, f: Friend[Student]): Unit = f.doSome(s)
+  makeWithFriend(student, person)
+*/
+  /*
+    val arr = Array(Array(1, 2, 3))
+    val arr2 = Array(Array(2, 3, 4))
+    (arr, arr2).zipped.map(_ ++ _).foreach(println)
+
+
+    val value = "!"
+    value match {
+      case "!" => true
+    }*/
+
+  /*def doSome[T, S](arr: Array[T])(arr2: Array[S]) = arr(0)
+
+  val fString = doSome[String, Int]
+  val fInt = fString(Array("!"))
+  fInt(Array(1))*/
+
+  /*@deprecated(message="use other method")
+  def doSome(@deprecatedName('Name) name: String) = {}
+
+  doSome(Name = "!")*/
+  //def doSome[@specialized(Short, Int, Boolean) T](x: T): T = x
+
 
   /*val RichFile(path, name, ext) = "/home/cay/readme.txt"
   println(f"$path; $name; $ext")*/
