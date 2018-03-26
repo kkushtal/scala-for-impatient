@@ -1,10 +1,143 @@
 import java.util.Calendar
+
 import javax.swing.text.Document
+
+import scala.collection.SortedSet
+
 
 object Example extends App {
 
+  val str = "my string in scala language"
 
-  trait Logger {
+import scala.collection.JavaConverters._
+  val map = System.getProperties().asScala
+  val arr = 1 to 100
+  val v = arr.view
+  val vp = v.par.map(x => {println(x); x}).map(x => { val v = -x; println(v); v})
+  /*val arr = List(1, 2, 3, 4, 5)
+  arr.map(x => {
+    val v = x * 2
+    println(v)
+    v
+  }).map(x => {
+    val v = x * -1
+    println(v)
+    v
+  })
+
+
+  arr.view.map(x => {
+    val v = x * 2
+    println(v)
+    v
+  }).map(x => {
+    val v = x * -2
+    println(v)
+    v
+  }).force*/
+
+
+  /*val view = (10 to 20).view
+  var v2 = view.map(_ * 2)
+  val v3 = v2.map(math.pow(_, 2).toInt)
+  v3.force*/
+
+
+  /*  def nums(n: BigInt): Stream[BigInt] = n #:: nums(n)
+    val stream = nums(10)*/
+
+  //val set = str.split("\n").toSet//.flatMap(_.toCharArray)
+  //val res = set.flatMap(_.toCharArray)
+  //val s = SortedSet(a: _*)
+  /*val arr = Array(1,2,3,4,5)
+  val set1 = Set(1,2,3)
+  val set2 = Set(3,4,5)
+  val res = arr match {
+    case last +: arr.tail => {println(last); true}
+    case _ => false
+  }
+  print(res)
+  */
+
+
+  /*import _root_.scala.collection.mutable.LinkedList
+  val lst = LinkedList(-1, -2, 3, -4, -5, 6)
+
+  def doSome(lst: LinkedList[Int], fn: (Int) => Boolean): Unit = {
+    var cur = lst
+    while (cur != Nil) {
+      if (fn(cur.elem)) cur.elem *= -1
+      cur = cur.next
+    }
+  }
+
+  def del(lst: LinkedList[Int]): Unit = {
+    var cur = lst
+    while (cur != Nil && cur.next != Nil) {
+      cur.next = cur.next.next
+      cur = cur.next
+    }
+  }*/
+
+  /*def run(fn: => Boolean)(block: => Int): Int = {
+    if (fn) block
+    else 0
+  }
+
+  val fn = 1 == 1
+
+  val block = 10 - 2
+  print(run(fn)(block))*/
+
+
+  /*val fn = (x: Int) => x * 2
+  val arr = Array(1, 2, 3, 4)
+  arr.map { (x: Int) => x * 2 }
+  arr.filter { x => x.equals(0) }
+
+  def func[T](fn: T => T): T => T = fn
+  val fnInt = (_: Int) * 3
+  func(fnInt)
+
+  def mulBy(x: Int) = x * (_: Int)
+  val x3 = mulBy(3)
+  val res = x3(55)
+
+  def f[T] = _: T
+  val fInt = f[Int]
+  print(fInt(1))*/
+
+
+  /*val a = Array(1, 2, 3)
+  val b = Array(1, 2, 4)
+  a.corresponds(b)(_ < _)
+  def ff(n: Int) = n * (_: Int)
+  def ff2(n: Int)(m: Int) = n * m
+  object obj {
+    var n = "!"
+    def apply(m: String): String => String = x => (n, m, x).productIterator.mkString(" ")
+  }
+  val func = obj("*")
+  println(f"1: ${func("?")}")
+  obj.n = "#"
+  println(f"2: ${func("?")}")
+
+
+
+  val mulBy = new Function[Double, Double => Double] {
+    def apply(_n: Double): Double => Double = {
+      new Function[Double, Double] {
+        val n = _n
+        def apply(x: Double): Double = n * x
+      }
+    }
+  }
+  val half = mulBy(.5)
+  val triple = mulBy(3)
+  val res1 = half(20)
+  val res2 = triple(10)*/
+
+  /*trait Logger {
     print(f"Logger => ")
     def log(msg: String): Unit = {}
 
@@ -57,7 +190,7 @@ object Example extends App {
       if (balance < amount) severe("Withdraw error.")
       else balance -= amount
     }
-  }
+  }*/
 
   /*class A {
     print("A")
@@ -86,7 +219,6 @@ object Example extends App {
   d.log()
   d.save()
   print(d.arr.length + " " + d.methodB())*/
-
 
 
   /*val acc = new BankAccount with TimestapLogger with ShortLogger {
@@ -155,8 +287,7 @@ object Example extends App {
 
   val _b = new {override val range = 5} with _B with _A
   print(_b.arr.length)
-*/
-
+  */
 
 
   //val acc = new { val mLength = 5; } with BankAccount with ShortLogger with TimestapLogger { print(array.length)}
@@ -167,14 +298,12 @@ object Example extends App {
     val array = new Array(size)
   }
   class B(var _size: Int) extends { override val size = _size} with A {
-//    val size = _size
+  //    val size = _size
     println(f"length: ${array.length}; size: $size")
   }
   val s = 11
   val b = new {override val size = s} with B(5)
   print(b.size)*/
-
-
 
 
   /*val acc = new {
@@ -302,7 +431,7 @@ object Example extends App {
 
   def makeWithFriend(s: Student, f: Friend[Student]): Unit = f.doSome(s)
   makeWithFriend(student, person)
-*/
+  */
   /*
     val arr = Array(Array(1, 2, 3))
     val arr2 = Array(Array(2, 3, 4))
@@ -374,7 +503,7 @@ object Example extends App {
     }
   }
   object IsPositive {
-//    def unapply(that: Int): Option[Boolean] = if (that > 0) Some(true) else None
+  //    def unapply(that: Int): Option[Boolean] = if (that > 0) Some(true) else None
     def unapply(value: Double): Boolean = value >= 0
   }
   val d1 = Dog(10, 1)
@@ -431,7 +560,7 @@ object Example extends App {
     case _ => "?"
   }
   println(resName)
-*/
+  */
 
   /*val dr = d1 * d2
   dr += d2
@@ -462,7 +591,7 @@ object Example extends App {
   }
   val w = new `while`()
   println(w.`for`)
-*/
+  */
   /*trait Trait {
     val trait_val = 0
     val col = "!"
@@ -520,7 +649,7 @@ object Example extends App {
 
   val request = new CreateDB with MinskRequest with MoscowRequest with BreakRequest
   request()
-*/
+  */
   //  val pattern = """([a-zA-Z]+)\s+([a-zA-Z]+)""".r
   //val pattern = """([a-zA-Z]+)""".r
   //val pattern(x, y) = "my first"
@@ -554,391 +683,391 @@ object Example extends App {
   }
   Character.isDigit('1')
   println(Character.digit('1', 10))*/
-}
 
 
-/*import javafx.print.PaperSource
+  /*import javafx.print.PaperSource
 
-import _root_.scala.beans.BeanProperty
-import _root_.scala.collection.mutable.ArrayBuffer*/
+  import _root_.scala.beans.BeanProperty
+  import _root_.scala.collection.mutable.ArrayBuffer*/
 
-/*
-package Person {
-  package Man {
+  /*
+  package Person {
+    package Man {
 
-    object Examples {
-      override def toString(): String = "my class"
+      object Examples {
+        override def toString(): String = "my class"
+      }
+
+      package object Driver {
+        var name = "Oleg"
+      }
+
+      package Driver {
+
+        class Driver {
+          println(name)
+        }
+
+        object Driver {
+          def apply() = new Driver()
+        }
+
+      }
+
     }
 
-    package object Driver {
-      var name = "Oleg"
-    }
+  }
+
+  package Person.Man {
 
     package Driver {
 
-      class Driver {
+      class Baker {
+        Examples
+        _root_.scala.collection.mutable.ArrayBuffer.empty[String]
+      }
+
+      object Baker {
+        def apply() = new Baker()
+      }
+
+    }
+
+
+  }*/
+
+  /*
+  package Person {
+
+    package object Man {
+      private var _name = "Oleg"
+
+      def name = _name
+
+      def name_=(newValue: String) = _name = newValue
+
+      def no = {}
+    }
+    package Man {
+
+      class MyMan {
         println(name)
       }
 
-      object Driver {
-        def apply() = new Driver()
+      object MyMan {
+        def apply() = new MyMan
       }
 
     }
 
   }
 
-}
 
-package Person.Man {
-
-  package Driver {
-
-    class Baker {
-      Examples
-      _root_.scala.collection.mutable.ArrayBuffer.empty[String]
-    }
-
-    object Baker {
-      def apply() = new Baker()
-    }
-
-  }
-
-
-}*/
-
-/*
-package Person {
-
-  package object Man {
-    private var _name = "Oleg"
-
-    def name = _name
-
-    def name_=(newValue: String) = _name = newValue
-
-    def no = {}
-  }
-  package Man {
-
-    class MyMan {
-      println(name)
-    }
-
-    object MyMan {
-      def apply() = new MyMan
-    }
-
-  }
-
-}
-
-
-object Example extends App {
-  def iMap(values: List[Int], func: Int => Int) = {
-    values.foldRight(List.empty[Int]) { (x: Int, lst: List[Int]) =>
-      func(x) :: lst
-    }
-  }
-
-  /*def func(i: Int): Int = i * 2
-
-  val lst = List(10, 20, 30, 40)
-  val res = iMap(lst, func(_))
-  println(res)
-
-  var par = (for (i <- (0 until 100).par) yield i)*/
-
-  class A[T] {
-    def as(x: Any) = x.asInstanceOf[T]
-
-    def func: String = "A"
-  }
-
-  class B extends A {
-    override def func: String = super.func + " " + "B"
-  }
-
-  class C extends B {
-    override def func: String = super.func + " " + "C"
-  }
-
-  val c = new C
-
-  c match {
-    case o: B => println("!B")
-    case o: C => println("!C")
-    case _ => println("!_")
-  }
-
-  val a = new A[String]
-
-  val d = new C {
-    def alert = println("!")
-  }
-  check(d)
-
-  def check(x: C {def alert: Unit}) = {
-    println(x.func)
-    x.alert
-  }
-
-  abstract class M {
-    protected[this] val m: Array[Int]
-    protected[this]def func: Unit
-  }
-  class T extends M{
-    protected val m = Array(0, 10)
-    protected def func = {}
-  }
-  val t = new T*/
-//  println(t.v.mkString(", "))
-/*
-  class Animal(val id: Int) {
-
-    val arr = new Array[Int](id)
-  }
-
-  class Monkey() extends Animal(5) {
-    override val id: Int = 20
-
-  }
-
-  val monkey = new Monkey()
-  println(monkey.arr.mkString(", "))
-
-}*/
-
-
-/*import _root_.scala.collection.mutable.HashMap
-import _root_.java.util.{ HashMap => JavaHashMap}
-import Person.Man.{name => n, MyMan => m, no => nos}
-
-val d = Driver
-d()
-println(n)
-m()
-
-import sys.process._*/
-
-/*import scala.collection.mutable.ArrayBuffer
-class Person extends Serializable {
-
-  val array = ArrayBuffer[Int](1, 2, 3)
-  val map = Map(1 -> "", 2 -> "")
-}
-
-val in = new java.io.ObjectInputStream(new java.io.FileInputStream("C:/scala/object.obj"))
-val person = in.readObject().asInstanceOf[Person]
-in.close*/
-/*import java.io.File
-def subdirs(dir: File): Iterator[File] = {
-  val children = dir.listFiles.filter(_.isDirectory)
-  children.toIterator ++ children.flatMap(subdirs _)
-}
-
-val file = new File("C:/scala")
-val iterator = subdirs(file)
-println(iterator.mkString("\n"))*/
-
-/*
-object Person {
-  private var id = 0
-  def createNewId = { this.id += 1; this.id }
-
-}
-abstract class Person {
-  val id: Int = Person.createNewId
-  def create: Int
-  var ex: Int
-  def c {}
-}
-
-class Employee(override val id: Int) extends Person {
-  def create = 0
-  var ex = 0
-  var e = 1
-
-  override def c: Unit = super.c
-}*/
-
-
-/*
-  class NewBird(private[NewBird] val name: String,
-                private[this] val weight: Int = 0,
-                @BeanProperty val age: Int = 0,
-                private[NewBird] val other: Boolean = false) {
-    if (other) show
-
-
-    def show = println(this.name + " " + this.weight + " " + this.age)
-
-    def showWith(that: NewBird) = println(this.getClass.getSimpleName + " name: " + this.name + " " + that.name + ";\nage" + this.age + this.age + ";\nweight " + this.weight + ";\nother " + this.other + " " + that.other)
-  }
-
-  val newBird = new NewBird("bird", 10, 2, true)
-  val newBird2 = new NewBird("bird_2", 20, 11, false)
-
-  newBird.showWith(newBird2)
-
-
-  class Bird(private[Bird] var name: String) {
-    private[this] var weight = 0
-    private var age = 0
-    private[Bird] var other = false
-
-    def this(name: String, weight: Int) {
-      this(name)
-      this.weight = weight
-      println("auxiliary constructor")
-    }
-
-    def this(name: String, weight: Int, age: Int) {
-      this(name, weight)
-      this.age = age
-    }
-
-    def this(name: String, weight: Int, age: Int, other: Boolean) {
-      this(name, weight)
-      this.age = age
-      this.other = other
-    }
-
-    def show = println(this.name + " " + this.weight + " " + this.age)
-
-    def showWith(that: Bird) = println("name: " + this.name + " " + that.name + ";\nage" + this.age + this.age + ";\nweight " + this.weight + ";\nother " + this.other + " " + that.other)
-  }
-
-  val bird = new Bird("name", 100, 2, true)
-  val bird2 = new Bird("also", 50)
-  bird.showWith(bird2)
-
-  class Car {
-
-    var wheels = ArrayBuffer[Wheel]()
-
-    class Ex {}
-
-    class Wheel(private[Car] var _pressure: Int, private[this] val radius: Int, private val mark: String) {
-
-      //private[this] def pressure = { println("this"); _pressure }
-      //private[this] def _pressure_=(n: Int): Int = { println("this"); _pressure = n }
-
-      def getPressure = _pressure * 10
-
-      def compare(wheel: Wheel) = {
-        mark > wheel.mark
+  object Example extends App {
+    def iMap(values: List[Int], func: Int => Int) = {
+      values.foldRight(List.empty[Int]) { (x: Int, lst: List[Int]) =>
+        func(x) :: lst
       }
     }
 
-    def createWheels(n: Int = 4) = wheels ++= (for (i <- 1 to n) yield new Wheel(i, 10 + i, "mark " + i))
+    /*def func(i: Int): Int = i * 2
 
-    def printPressure = println(wheels.map(_._pressure).mkString(", "))
+    val lst = List(10, 20, 30, 40)
+    val res = iMap(lst, func(_))
+    println(res)
 
-    /*def printRadius = println(wheels.map(_.radius).mkString(", "))
-    def printMark = println(wheels.map(_.mark).mkString(", "))*/
-    def changePressure = wheels(0)._pressure = 10
+    var par = (for (i <- (0 until 100).par) yield i)*/
 
-    def comparePressure(n: Int, m: Int) = wheels(n)._pressure < wheels(m)._pressure
+    class A[T] {
+      def as(x: Any) = x.asInstanceOf[T]
+
+      def func: String = "A"
+    }
+
+    class B extends A {
+      override def func: String = super.func + " " + "B"
+    }
+
+    class C extends B {
+      override def func: String = super.func + " " + "C"
+    }
+
+    val c = new C
+
+    c match {
+      case o: B => println("!B")
+      case o: C => println("!C")
+      case _ => println("!_")
+    }
+
+    val a = new A[String]
+
+    val d = new C {
+      def alert = println("!")
+    }
+    check(d)
+
+    def check(x: C {def alert: Unit}) = {
+      println(x.func)
+      x.alert
+    }
+
+    abstract class M {
+      protected[this] val m: Array[Int]
+      protected[this]def func: Unit
+    }
+    class T extends M{
+      protected val m = Array(0, 10)
+      protected def func = {}
+    }
+    val t = new T*/
+  //  println(t.v.mkString(", "))
+  /*
+    class Animal(val id: Int) {
+
+      val arr = new Array[Int](id)
+    }
+
+    class Monkey() extends Animal(5) {
+      override val id: Int = 20
+
+    }
+
+    val monkey = new Monkey()
+    println(monkey.arr.mkString(", "))
 
   }*/
 
-/*val car = new Car
-car.createWheels()
-car.changePressure
-car.printPressure
-println(car.wheels(0).compare(car.wheels(1)))//.comparePressure(0, 1))*/
 
-/*
-  class Person {
-    private var pAge: Int = 0
+  /*import _root_.scala.collection.mutable.HashMap
+  import _root_.java.util.{ HashMap => JavaHashMap}
+  import Person.Man.{name => n, MyMan => m, no => nos}
 
-    private def age: Int = pAge
-    def age_=(n: Int) = if (n > 5) pAge = n
-    def getAge = age
+  val d = Driver
+  d()
+  println(n)
+  m()
+
+  import sys.process._*/
+
+  /*import scala.collection.mutable.ArrayBuffer
+  class Person extends Serializable {
+
+    val array = ArrayBuffer[Int](1, 2, 3)
+    val map = Map(1 -> "", 2 -> "")
   }
 
-  val p = new Person
-  p.age_=(6)
-  println(p.getAge)*/
-/*def getIndexes(array: Array[Int], c: Int) = {
-  var count = c
-  val indexes = for (i <- 0 until array.length if (count > 0 || array(i) >= 0)) yield {
-    if (array(i) < 0) count -= 1
-    i
+  val in = new java.io.ObjectInputStream(new java.io.FileInputStream("C:/scala/object.obj"))
+  val person = in.readObject().asInstanceOf[Person]
+  in.close*/
+  /*import java.io.File
+  def subdirs(dir: File): Iterator[File] = {
+    val children = dir.listFiles.filter(_.isDirectory)
+    children.toIterator ++ children.flatMap(subdirs _)
   }
-  indexes.toArray
-}
 
-def getArray(array: Array[Int], indexes: Array[Int]) = {
-  for (i <- 0 until indexes.length) {
-    val iNew = indexes(i)
-    array(i) = array(iNew)
+  val file = new File("C:/scala")
+  val iterator = subdirs(file)
+  println(iterator.mkString("\n"))*/
+
+  /*
+  object Person {
+    private var id = 0
+    def createNewId = { this.id += 1; this.id }
+
   }
-  val trimCount = array.length - indexes.length
-  val buffer = array.toBuffer
-  buffer.trimEnd(trimCount)
-  buffer.toArray
-}
-
-
-def example(array: Array[Int], count: Int = 2) = {
-  val indexes = getIndexes(array, count)
-  val resArray = getArray(array, indexes)
-  resArray
-}
-
-val array = (-10 to 10).toArray
-var resArray = example(array)
-printArr(resArray, "resArray")
-
-def printArr(array: Array[Int], name: String) = {
-  print(name + ": ")
-  for (i <- array) {
-    print(i + " ")
+  abstract class Person {
+    val id: Int = Person.createNewId
+    def create: Int
+    var ex: Int
+    def c {}
   }
-  println
-}*/
+
+  class Employee(override val id: Int) extends Person {
+    def create = 0
+    var ex = 0
+    var e = 1
+
+    override def c: Unit = super.c
+  }*/
 
 
-/*
-  def wrapper = {
-    def example = {
+  /*
+    class NewBird(private[NewBird] val name: String,
+                  private[this] val weight: Int = 0,
+                  @BeanProperty val age: Int = 0,
+                  private[NewBird] val other: Boolean = false) {
+      if (other) show
+
+
+      def show = println(this.name + " " + this.weight + " " + this.age)
+
+      def showWith(that: NewBird) = println(this.getClass.getSimpleName + " name: " + this.name + " " + that.name + ";\nage" + this.age + this.age + ";\nweight " + this.weight + ";\nother " + this.other + " " + that.other)
+    }
+
+    val newBird = new NewBird("bird", 10, 2, true)
+    val newBird2 = new NewBird("bird_2", 20, 11, false)
+
+    newBird.showWith(newBird2)
+
+
+    class Bird(private[Bird] var name: String) {
+      private[this] var weight = 0
+      private var age = 0
+      private[Bird] var other = false
+
+      def this(name: String, weight: Int) {
+        this(name)
+        this.weight = weight
+        println("auxiliary constructor")
+      }
+
+      def this(name: String, weight: Int, age: Int) {
+        this(name, weight)
+        this.age = age
+      }
+
+      def this(name: String, weight: Int, age: Int, other: Boolean) {
+        this(name, weight)
+        this.age = age
+        this.other = other
+      }
+
+      def show = println(this.name + " " + this.weight + " " + this.age)
+
+      def showWith(that: Bird) = println("name: " + this.name + " " + that.name + ";\nage" + this.age + this.age + ";\nweight " + this.weight + ";\nother " + this.other + " " + that.other)
+    }
+
+    val bird = new Bird("name", 100, 2, true)
+    val bird2 = new Bird("also", 50)
+    bird.showWith(bird2)
+
+    class Car {
+
+      var wheels = ArrayBuffer[Wheel]()
+
+      class Ex {}
+
+      class Wheel(private[Car] var _pressure: Int, private[this] val radius: Int, private val mark: String) {
+
+        //private[this] def pressure = { println("this"); _pressure }
+        //private[this] def _pressure_=(n: Int): Int = { println("this"); _pressure = n }
+
+        def getPressure = _pressure * 10
+
+        def compare(wheel: Wheel) = {
+          mark > wheel.mark
+        }
+      }
+
+      def createWheels(n: Int = 4) = wheels ++= (for (i <- 1 to n) yield new Wheel(i, 10 + i, "mark " + i))
+
+      def printPressure = println(wheels.map(_._pressure).mkString(", "))
+
+      /*def printRadius = println(wheels.map(_.radius).mkString(", "))
+      def printMark = println(wheels.map(_.mark).mkString(", "))*/
+      def changePressure = wheels(0)._pressure = 10
+
+      def comparePressure(n: Int, m: Int) = wheels(n)._pressure < wheels(m)._pressure
+
+    }*/
+
+  /*val car = new Car
+  car.createWheels()
+  car.changePressure
+  car.printPressure
+  println(car.wheels(0).compare(car.wheels(1)))//.comparePressure(0, 1))*/
+
+  /*
+    class Person {
+      private var pAge: Int = 0
+
+      private def age: Int = pAge
+      def age_=(n: Int) = if (n > 5) pAge = n
+      def getAge = age
+    }
+
+    val p = new Person
+    p.age_=(6)
+    println(p.getAge)*/
+  /*def getIndexes(array: Array[Int], c: Int) = {
+    var count = c
+    val indexes = for (i <- 0 until array.length if (count > 0 || array(i) >= 0)) yield {
+      if (array(i) < 0) count -= 1
+      i
+    }
+    indexes.toArray
+  }
+
+  def getArray(array: Array[Int], indexes: Array[Int]) = {
+    for (i <- 0 until indexes.length) {
+      val iNew = indexes(i)
+      array(i) = array(iNew)
+    }
+    val trimCount = array.length - indexes.length
+    val buffer = array.toBuffer
+    buffer.trimEnd(trimCount)
+    buffer.toArray
+  }
+
+
+  def example(array: Array[Int], count: Int = 2) = {
+    val indexes = getIndexes(array, count)
+    val resArray = getArray(array, indexes)
+    resArray
+  }
+
+  val array = (-10 to 10).toArray
+  var resArray = example(array)
+  printArr(resArray, "resArray")
+
+  def printArr(array: Array[Int], name: String) = {
+    print(name + ": ")
+    for (i <- array) {
+      print(i + " ")
+    }
+    println
+  }*/
+
+
+  /*
+    def wrapper = {
+      def example = {
+        try {
+          throw new IllegalArgumentException("TRY_ARGUMET")
+        } catch {
+          case exc: IllegalArgumentException => exc.getMessage
+        } finally {
+          throw new Exception("FINALLY_EXCEPTION")
+        }
+      }
+
       try {
-        throw new IllegalArgumentException("TRY_ARGUMET")
+        example
       } catch {
-        case exc: IllegalArgumentException => exc.getMessage
-      } finally {
-        throw new Exception("FINALLY_EXCEPTION")
+        case exc: IllegalArgumentException => "WRAPPER_Illegel_Argument_Exception"
+        case exc: Exception => "WRAPPER_Exception"
       }
+
     }
 
-    try {
-      example
+
+    def getType[T](v: T)(implicit ev: scala.reflect.ClassTag[T]) = ev.toString
+
+    val x = try {
+      1 / 0
     } catch {
-      case exc: IllegalArgumentException => "WRAPPER_Illegel_Argument_Exception"
-      case exc: Exception => "WRAPPER_Exception"
+      case _: ArithmeticException => "Message"
     }
-
+    try {
+      Throw.createException("Exception Message!")
+    } catch {
+      case _: IllegalArgumentException => println("Illegal Argument Exception")
+    }
   }
 
-
-  def getType[T](v: T)(implicit ev: scala.reflect.ClassTag[T]) = ev.toString
-
-  val x = try {
-    1 / 0
-  } catch {
-    case _: ArithmeticException => "Message"
-  }
-  try {
-    Throw.createException("Exception Message!")
-  } catch {
-    case _: IllegalArgumentException => println("Illegal Argument Exception")
-  }
+  object Throw {
+    def createException(s: String) = {
+      throw new IllegalArgumentException(s)
+    }*/
 }
-
-object Throw {
-  def createException(s: String) = {
-    throw new IllegalArgumentException(s)
-  }*/
