@@ -1,5 +1,3 @@
-import Chapter13.prices
-
 import _root_.scala.collection.mutable
 
 object Chapter13 extends App {
