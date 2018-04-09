@@ -1,19 +1,579 @@
+import java.net.InetSocketAddress
 import java.util.Calendar
 
 import javax.swing.text.Document
 
 import scala.collection.SortedSet
-
+import scala.collection.parallel.ParSet
+import scala.annotation._
+import scala.annotation.elidable._
+import _root_.scala.concurrent.{ExecutionContext, Future, Promise}
+import ExecutionContext.Implicits.global
+import _root_.scala.concurrent.duration._
+import scala.util.{Failure, Success, Try}
+import java.time.LocalTime
+import java.util.concurrent.Executors
+import _root_.scala.language.implicitConversions
+import _root_.scala.io.Source
+import _root_.java.io.File
 
 object Example extends App {
 
-  val str = "my string in scala language"
+/*
+  abstract class <!<[-From, +To] extends Function1[From, To]
 
-import scala.collection.JavaConverters._
-  val map = System.getProperties().asScala
-  val arr = 1 to 100
-  val v = arr.view
-  val vp = v.par.map(x => {println(x); x}).map(x => { val v = -x; println(v); v})
+  object <!< {
+    implicit def doSome[A] = new (A <!< A) { def apply(x: A) = x }
+  }
+  abstract class fn[-From, +To] extends Function1[From, To]
+  object fn {
+    def doSome[A] = new (A fn A) { def apply(x: A) = x }
+  }
+  fn(1,1)*/
+
+  /*def doSome[T <: Iterable[T]](x: T) = {}
+  class impl[T: Ordering](val x: T, y: T) {
+    val ev: Ordering[T] = implicitly[Ordering[T]]
+    def compare(): Unit = {
+      import _root_.scala.Ordered._
+      ev.compare(x, y)
+      x < y
+    }
+  }*/
+  /*class Fraction(val num: Int, val den: Int) {
+    def *(other: Fraction): Fraction = new Fraction(num * other.num, den * other.den)
+    override def toString: String = s"$num/$den"
+  }
+
+  object Fraction {
+    def apply(num: Int, den: Int): Fraction = new Fraction(num, den)
+    implicit def int2Fraction(from: Int): Fraction = Fraction(from, 1)
+    implicit def Fraction2int(from: Fraction): Int = from.num
+    //implicit def fraction2Double(f: Fraction): Double = f.num * 1d / f.den
+    //implicit def int2Fraction(n: Int): Fraction = Fraction(n, 1)
+  }
+
+  object FractionConversions {
+    implicit def int2Fraction(n: Int): Fraction = Fraction(n, 1)
+    implicit def fraction2Double(f: Fraction): Double = f.num * 1d / f.den
+    implicit def double2Fraction(d: Double): Fraction = Fraction(d.toInt, 1)
+  }
+  //import FractionConversions.{double2Fraction, fraction2Double, int2Fraction}
+  //import FractionConversions.{fraction2Double => _, _}
+  val fr = Fraction(2, 3)
+  val vInt = fr * 3
+  val vFr = 3 * fr
+  println(vInt)
+  println(vFr)*/
+  //import FractionConversions.fraction2Double
+  //val resDouble = 3d * fr
+  //import FractionConversions.int2Fraction
+  //val resFraction: Fraction = fr * 3//int2Fraction(3) * fr
+  //println(s"resDouble: $resDouble")
+  //println(s"resFraction: $resFraction")
+
+
+  /*implicit class RichFile(val from: File) extends AnyVal {
+    def read: String = Source.fromFile(from.getPath).mkString
+  }
+
+  val file: File = new File("path.txt")
+  val contents = file.read*/
+
+
+  /*class Person
+
+  class Student extends Person
+
+  val person1 = new Person
+  val person2 = new Person
+  val student1 = new Student
+  val student2 = new Student*/
+
+  /*val pair = new PairD[Student, Person](student1, student2)
+  pair.replaceFirst(person1)*/
+
+
+  /*import _root_.scala.collection.mutable.ArrayBuffer
+  trait Friend[-T] {
+    def befriends(someone: T)
+  }
+
+  def makeFriendWith(student: Student, friend: Friend[Student]): Unit = friend.befriends(student)
+
+  class Person extends Friend[Person] {
+    val friends: ArrayBuffer[Person] = ArrayBuffer.empty[Person]
+    override def befriends(someone: Person): Unit = friends += someone
+  }
+  class Student extends Person
+
+  val susan = new Student
+  val sven = new Student
+  val fred = new Person
+
+  val v: Unit = makeFriendWith(susan, fred)
+  fred.befriends(sven)
+
+  def friends(students: Array[Student], find: Student => Person): Array[Person] = {
+    students.map(find)
+  }
+
+  def findStudent(p: Person): Student = p.asInstanceOf[Student]*/
+  /*
+    def create(arg: Int): (Future[Int], Promise[Int]) = {
+      val promise = Promise[Int]()
+      val future = Future {
+        Thread.sleep(5 * 1000)
+        var n = arg * 2
+        println(s"${LocalTime.now()}; Future: $n ")
+
+        promise.success {
+          println(s"${LocalTime.now()}; Promise: $n ")
+          n
+        }
+
+        Thread.sleep(5 * 1000)
+        n = arg * 3
+        println(s"${LocalTime.now()}; Future: $n ")
+        n
+      }
+      (future, promise)
+    }
+
+    val n = 2
+    val promise = Promise[Int]()
+
+    def future = Future {
+      val v = n * 2
+      val res = v * 3
+      promise.success(1)
+      promise.success(res)
+
+      res
+    }
+
+    val ec = ExecutionContext.fromExecutor(Executors.newCachedThreadPool())
+    val r = Future.traverse(1 to 3)(x => Future {
+      Thread.sleep(5000)
+      val v = x * 2
+      println(s"$v. ${LocalTime.now()}")
+      v
+    })*/
+
+
+  /*  def doSome(arg: Int) = arg * 2
+
+    def answer(arg: Int) = {
+      val p = Promise[Int]()
+      Future {
+        val n = doSome(arg)
+        p.success(n)
+        10
+      }
+      p.future
+    }
+
+    def answer2(arg: Int) = {
+      val p = Promise[Int]()
+      Future {
+        val n = doSome(arg)
+        p.success(n)
+      }
+      p.future
+    }*/
+
+
+  /*val a = Future(5)
+  val b = Future(6)
+  val c = Future(7)
+
+  Future.sequence(Vector(a, b, c)) map (_.product) foreach println
+  val features = Vector(a, b, c)
+  features.find(_.isCompleted)
+  Future.firstCompletedOf(features)
+
+  val map = Map((1,"!"), (2,"@"), (3,"#"))
+  val fs = Future.traverse(map){case (k, v) => Future(v * k)}
+  fs.map(_.mkString(", ")).foreach(println)
+
+  Future.foldLeft(features)(0)(_ * _)*/
+
+
+  /*val f1 = Future {
+    print("1. FUTURE !!!")
+    10
+  }
+  def f2 = Future {
+    print("2. FUTURE !!!")
+    20
+  }
+
+  val r = for (v1 <- f1; v2 <- f2 if v1 == v2) yield v1 + v2
+
+  val arr = List(0, 1)
+  arr.flatMap(v => Option(v + 1))
+
+  def square(x: Int): Option[Int] = Some(x * x)
+  def increment(x: Int): Option[Int] = Some(x + 1)
+  def unit(x: Int): Option[Int] = Some(x)
+  def leftUnitLaw(): Unit = {
+    val x = 5
+    val monad: Option[Int] = Some(x)
+    val result = monad.flatMap(square) == square(x)
+    print(result)
+  }
+  def rightUnitLaw(): Unit = {
+    val x = 5
+    val monad: Option[Int] = Some(x)
+    val result = monad.flatMap(unit) == monad
+    print(result)
+  }
+  def associativityLaw(): Unit = {
+    val x = 5
+    val monad: Option[Int] = Some(x)
+    val left = monad flatMap square flatMap increment
+    val right = monad flatMap(x => square(x) flatMap increment)
+  }
+
+  def findPort(): Option[Int] = Some(80)
+  def findHost(): Option[String] = Some("my.host.com")
+
+  import java.net.InetSocketAddress
+  val address: Option[InetSocketAddress] = for {
+    port <- findPort()
+    host <- findHost()
+  } yield new InetSocketAddress(host, port)
+
+  val address2: Option[InetSocketAddress] = findHost().flatMap(host => findPort().map(port => new InetSocketAddress(host, port)))
+  address.foreach(println)
+  address2.foreach(println)
+
+  val t = Try{throw new Exception("!"); 20}
+  t.getOrElse("?")*/
+
+
+  /*def block1 = {
+    println("block1")
+    Thread.sleep(1000)
+    10 //throw new Exception("FIRST MESSAGE THROW")
+  }
+
+  val f1 = Future {
+    block1
+  }
+
+  def block2 = {
+    println("block2")
+    Thread.sleep(2000)
+    20 //throw new Exception("SECOND MESSAGE THROW")
+  }
+
+  def f2(arg: Int) = Future {
+    block2
+  }
+  //complete(f1, f2)
+
+  val combined = f1.flatMap(v1 => f2(v1).map(v2 => v1 + v2))
+  combined
+
+  def complete(f1: Future[Int], f2: Future[Int]): Unit = f1.onComplete {
+    case Success(v1) => f2.onComplete {
+      case Success(v2) => print(s"value is: ${v1 + v2}")
+      case Failure(ex) => print(s"2. ${ex.getMessage}")
+    }
+    case Failure(ex) => print(s"1. ${ex.getMessage}")
+  }*/
+
+
+  /*f1.onComplete {
+    case Success(v1) => f2.onComplete {
+      case Success(v2) => print(s"value is: ${v1 + v2}")
+      case Failure(ex) => print(s"2. ${ex.getMessage}")
+    }
+    case Failure(ex) => print(s"1. ${ex.getMessage}")
+  }*/
+
+
+  /*val value = 3
+  val future = Future {
+    Thread.sleep(10000)
+    if (value > 2) true
+    else throw new Exception("My Message")
+  }
+  val waitFuture = Await.ready(future, 10.seconds)
+
+  val Some(valueTry) = if (waitFuture.isCompleted) waitFuture.value else None
+  val valueOption = valueTry.toOption
+
+  val res = (valueTry: @switch @unchecked) match {
+    case Success(x) => x.toString
+    case Failure(ex) => ex.getMessage
+  }
+  print(res)*/
+
+
+  /*@tailrec def sum(part: Int)(seq: Seq[Int]): Int = {
+    if (seq.isEmpty) 0 else sum(seq.head + part)(seq.tail)
+  }*/
+  /*val value = "Value"
+  val result = (value: @unchecked) match {
+    case _: String => "STRING..."
+  }*/
+
+  /*@deprecatedInheritance class Dep {
+    @deprecatedOverriding(message = "MESSAGE")
+    def some() {}
+  }
+  class xDep() extends Dep{
+    override def some(): Unit = super.some()
+  }*/
+  /*object sum {
+    @deprecated(message="My MESSAGE", since = "BECAUSE")
+    @tailrec def apply(@deprecatedName('accum) acc: Int)(seq: Seq[Int]): Int = {
+      if (seq.isEmpty) acc else sum(acc + seq.head)(seq.tail)
+    }
+  }
+
+  val s0 = sum(accum = 0)(1 to 10)
+*/
+  //@elidable(elidable.ASSERTION) def func[@specialized(Int, Double) T, @specialized(Boolean) B](value: T, bool: B): B = bool
+
+  /*val s0 = sum(0)
+  s0(Array(1, 2, 3, 4, 5, 6))*/
+  /*@tailrec def suM(seq: Seq[Int]): Int = {
+    if (seq.isEmpty) 0 else seq.head + suM(seq.tail)
+  }*/
+
+  /*class ToJava {
+    import scala.annotation._
+    //import scala.beans.BooleanBeanProperty
+    @throws(classOf[java.io.IOException]) def read(file: java.io.File) = {}
+    @scala.beans.BooleanBeanProperty val value: Boolean = true
+  }
+
+  object Object {
+    @scala.beans.BooleanBeanProperty private val value: Boolean = true
+  }*/
+  /*def trycatch[T](block: => T)(catcher: PartialFunction[Throwable, T]): T ={
+    try block
+    catch catcher
+  }
+
+  val x = 0
+  trycatch(x + 1) { case _: NumberFormatException => x }*/
+
+  /*val map = Map(1 -> "!", 2 -> "@")
+  val res = map.get(2) match {
+    case Some("!") => "first"
+    case Some("@") => "second"
+    case _ => "other"
+  }*/
+
+  /*val map = Map((1, 10), (2, 20))
+  val arr = Array(Some(1), None, Some(2))
+  val v = map.get(3)
+  v.filter(_ > 5)*/
+
+  /*val pattern = """\{[(0-9)+]\}""".r
+  val message = "Some {0} message with {1} text without {2} other {3} function in {4} Scala"
+  val replace = Map(("{0}", "One"), ("{1}", "Two"), ("{2}", "Three"), ("{3}", "Four"))
+  val lift = replace.lift
+  val result = pattern.replaceSomeIn(message, m => lift(m.matched))
+  print(result)*/
+
+  /*val func: PartialFunction[Int, Boolean] = {
+    case 1 => true
+    case 2 => true
+    case _ => false
+  }
+  val less: PartialFunction[Int, Boolean] = {
+    case value => value < 5
+  }
+
+  val arr = Array(1, 2, 3, 4, 5)
+  val f = less.lift
+  print(arr.filter(less).mkString(", "))
+  val map = Map((0, "!"), (1, "@"), (2, "#"))
+  val map2 = Map((2, "@"), (3, "#"))
+  val fm = map.lift
+  println(fm(1).get)
+
+  print(map.keys.collect(arr).mkString(", "))*/
+
+  /*val f = func.lift
+  print(f(1) + " " + func(1))
+  func.isDefinedAt(1)*/
+
+
+  /*arr.flatten
+  map.collect { case (Some(key), value) => key -> value }
+  map.view.filter(_._1.isDefined).map { case (Some(k), v) => (k, v) }*/
+
+  /*sealed abstract class TLC
+  case object Red extends TLC
+  case object Yellow extends TLC
+  case object Green extends TLC
+  val color = new TLC {}
+  color match {
+    case Red => "red"
+    case Green => "green"
+    //case Yellow => "yellow"
+    case _ => "??"
+  }
+
+  val v: Option[Int] = Some(1)
+  v.get*/
+
+  /*case class Example() {
+    class Input{}
+  }
+  val e = new Example
+  val e2 = new Example
+  new e.Input*/
+
+  /*trait Item
+
+  case class Book(title: String, price: Double) extends Item
+
+  case class Package(description: String, discount: Double, books: Item*) extends Item
+
+  val books =
+    Package("First Package", .1,
+      Book("First Book", 10d),
+      Book("Second Book", 20d),
+      Package("Second Package", .1,
+        Book("Second-First Book", 100d),
+        Book("Second-Second Book", 200d)
+      )
+    )
+
+  def getPrice(item: Item): Double = item match {
+    case Book(_, price) => price
+    case Package(_, discount, books@_*) => books.map(getPrice).sum - discount
+  }
+
+  val Package(_, _, first_book, second_book @ Book(_: String, value: Double), Package(_, _, second_books @ _*)) = books*/
+
+
+  /*class Name(val name: String, val value: Int) {
+    var x = 0
+    def copy(name: Option[String] = None, value: Option[Int] = None): Name = {
+      val _name: String = if (name eq None) this.name else name.get
+      val _value: Int = if (value eq None) this.value else value.get
+      new Name(_name, _value)
+    }
+  }
+
+  case class OP(first: String, second: String)
+
+  val op = OP("!", "@")
+
+  val res = op match {
+    case OP(first, second) => f"first: $first; second: $second"
+    case _ => ""
+  }
+
+
+  case class ?#()
+  case object ++ {
+    def unapply(arr: Array[String]): Option[(String, String)] = {
+      if (arr.length < 2) None
+      else Some(arr(0), arr(1))
+    }
+  }
+
+
+
+  val n ++ m = Array("first", "second")*/
+  /*val name = new Name("Ivan", 10)
+  name.x = 1
+  val name2 = name.copy(value = Some(1))
+  print(f"${name.value}; ${name2.value}; ${name2.x}")*/
+
+
+  /*object FindAs {
+    val symbol: String = "/file/"
+
+    def unapplySeq(paths: Array[String]): Option[IndexedSeq[String]] = {
+      val res = paths.filter(_.contains(symbol))
+      if (res.nonEmpty) Some(res)
+      else None
+    }
+  }
+
+  var arr = Array("C:/file/path.txt", "C:/files/file.txt", "C:/file/index.html")
+  val res = arr match {
+    /*case FindAs(a, b, z @_*) => f"a: $a, b: $b, z: ${z.length}"
+    case FindAs(a, b) => f"a: $a, b: $b"*/
+    case FindAs(a, _*) => f"a: $a"
+    case _ => "None!"
+  }
+  //print(arr.mkString(", "))
+  //val res = arr.mkString(", ")
+  //print(res)
+  val regex = "([0-9]+) ([a-z]+)".r
+  val value = "7592 ivan"
+  //val (number, name) = regex.findAllIn(value)
+  val r = value match {
+    case regex(number, name) => f"$name $number"
+    case _ => "None"
+  }
+  print(r)
+  */
+  /*var array = Array(1, 2, 3, 4, 5)
+  val res = array match {
+    case Array(x, y) => f"x: $x; y: $y"
+    case Array(x, _, y, z@_*) => f"x: $x; y: $y; z: ${z.mkString(", ")}"
+    case _ => "None"
+  }
+  println(res)*/
+
+  /*object Arr {
+    def unapplySeq(arr: Array[Int]): Option[IndexedSeq[Int]] = {
+      if (arr.nonEmpty) Some(arr)
+      else None
+    }
+  }
+
+  val lst = Array(1, 2, 3, 4, 5)
+  val Arr(first, arr @ _*) = lst
+  println(arr.mkString(", "))
+
+  val f = Arr.unapplySeq(lst)*/
+
+
+  /*val str = "my string in scala language"
+  val arr = Array((0 to 2).toArray, (3 to 4).toArray, (5 to 6).toArray, (7 to 8).toArray, (9 to 10).toArray).par
+  val res = arr.fold(Array.empty[Int])(_ ++ _)
+  print(res.mkString(", "))*/
+
+  /*val strings = List("abc","def","ghi","jk","lmnop","qrs","tuv","wx","yz").par
+
+  val alphabet = strings.reduce(_++_)
+  //print(alphabet)
+  //val a = Array((1 to 100): _*)
+  val arr = (1 to 1000).toArray
+  val arr2 = Array.tabulate(1000)(x => x).par
+  val arr3 = for (k <- arr2) yield {
+    //print(k + " ")
+    k
+  }
+  /*println("")
+  print(arr3)*/
+  val a = Array.tabulate[Int](10)(_.toInt)
+  a.fold(0.0)((acc, x) => 9.0 + 0.0)
+  val set = ParSet(("Name", 10.0, 5), ("Name2", 15.0, 6), ("Name3", 20.0, 7))
+  def doSome(acc: Double, price: Double, count: Int): Double = acc + price * count
+
+  val res = set.aggregate(0d)((acc, tuple) => doSome(acc, tuple._2, tuple._3), _ + _)
+  print(res)*/
+
+
+  /*import scala.collection.JavaConverters._
+    val map = System.getProperties().asScala
+    val arr = 1 to 100
+    val v = arr.view
+    val vp = v.par.map(x => {println(x); x}).map(x => { val v = -x; println(v); v})*/
   /*val arr = List(1, 2, 3, 4, 5)
   arr.map(x => {
     val v = x * 2
